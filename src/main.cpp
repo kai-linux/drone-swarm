@@ -51,6 +51,11 @@ struct Drone {
     Vec2 target;
 };
 
+struct Action {
+    double ax = 0.0;
+    double ay = 0.0;
+};
+
 class SwarmWorld {
 public:
     SwarmWorld(int num_drones, double world_size)
@@ -70,7 +75,7 @@ public:
         }
     }
 
-    void step() {
+    void step(const vector<Action>& actions) {
         std::vector<Vec2> accelerations(drones_.size());
 
         for (size_t i = 0; i < drones_.size(); ++i) {
@@ -80,7 +85,8 @@ public:
 
             // Simple proportional-derivative controller:
             // accelerate toward the target, damp current velocity.
-            Vec2 acc = to_target * kp_ - d.vel * kd_;
+            // Vec2 acc = to_target * kp_ - d.vel * kd_;
+            Vec2 acc{actions[i].ax, actions[i].ay};
 
             // Basic collision avoidance:
             // if another drone is close, push away from it.
@@ -189,6 +195,8 @@ int main() {
     world.write_csv_header(out);
 
     const int num_steps = 1000;
+    
+    std::vector<Action> actions(10);
 
     for (int step = 0; step < num_steps; ++step) {
         world.write_csv_row(out, step);
