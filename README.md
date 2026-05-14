@@ -1,3 +1,8 @@
+```
+./run.sh   
+```
+
+Alternatively:
 Build the C++ simulator
 
 Run:
