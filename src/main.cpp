@@ -75,7 +75,7 @@ public:
         }
     }
 
-    void step(const vector<Action>& actions) {
+    void step(const std::vector<Action>& actions) {
         std::vector<Vec2> accelerations(drones_.size());
 
         for (size_t i = 0; i < drones_.size(); ++i) {
@@ -195,12 +195,21 @@ int main() {
     world.write_csv_header(out);
 
     const int num_steps = 1000;
-    
+
     std::vector<Action> actions(10);
 
     for (int step = 0; step < num_steps; ++step) {
         world.write_csv_row(out, step);
-        world.step();
+
+        std::vector<Action> actions(10);
+
+        // temporary dummy brain: push all drones to the right
+        for (size_t i = 0; i < actions.size(); ++i) {
+            actions[i].ax = 0.02;
+            actions[i].ay = 0.0;
+        }
+
+        world.step(actions);
     }
 
     std::cout << "Simulation finished. Wrote trajectory.csv\n";
