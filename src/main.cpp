@@ -141,6 +141,10 @@ public:
         }
     }
 
+    const std::vector<Drone>& drones() const {
+        return drones_;
+    }
+
 private:
     void handle_walls(Drone& d) {
         if (d.pos.x < 0.0) {
@@ -182,6 +186,30 @@ private:
     std::vector<Drone> drones_;
 };
 
+std::vector<Action> make_target_actions(const SwarmWorld& world) {
+    const std::vector<Drone>& drones = world.drones();
+
+    std::vector<Action> actions(drones.size());
+
+    double kp = 0.8;
+    double kd = 1.2;
+    double max_acc = 12.0;
+
+    for (size_t i = 0; i < drones.size(); ++i) {
+        const Drone& d = drones[i];
+
+        Vec2 to_target = d.target - d.pos;
+
+        Vec2 acc = to_target * kp - d.vel * kd;
+        acc = clamp_length(acc, max_acc);
+
+        actions[i].ax = acc.x;
+        actions[i].ay = acc.y;
+    }
+
+    return actions;
+}
+
 int main() {
     SwarmWorld world(10, 100.0);
 
@@ -201,13 +229,7 @@ int main() {
     for (int step = 0; step < num_steps; ++step) {
         world.write_csv_row(out, step);
 
-        std::vector<Action> actions(10);
-
-        // temporary dummy brain: push all drones to the right
-        for (size_t i = 0; i < actions.size(); ++i) {
-            actions[i].ax = 0.02;
-            actions[i].ay = 0.0;
-        }
+        std::vector<Action> actions = make_target_actions(world);
 
         world.step(actions);
     }
