@@ -1,15 +1,18 @@
 #!/bin/bash
 set -e
 
-echo "Configuring..."
-cmake -S . -B build -G Ninja \
-  -DPython_EXECUTABLE="$(pwd)/.venv/bin/python"
+PYTHON="$(pwd)/.venv/bin/python"
 
-echo "Building..."
+echo "== Configure =="
+cmake -S . -B build -G Ninja \
+  -DPython_EXECUTABLE="$PYTHON" \
+  > /dev/null
+
+echo "== Build =="
 cmake --build build
 
-echo "Running simulation..."
+echo "== Run C++ simulation =="
 ./build/swarm_sim
 
-echo "Plotting..."
-python python/plot_trajectory.py
+echo "== Plot =="
+"$PYTHON" python/plot_trajectory.py
