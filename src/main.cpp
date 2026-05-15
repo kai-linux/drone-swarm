@@ -145,6 +145,22 @@ public:
         return drones_;
     }
 
+    std::vector<double> observe() const {
+        std::vector<double> obs;
+        obs.reserve(drones_.size() * 6);
+
+        for (const Drone& d : drones_) {
+            obs.push_back(d.pos.x);
+            obs.push_back(d.pos.y);
+            obs.push_back(d.vel.x);
+            obs.push_back(d.vel.y);
+            obs.push_back(d.target.x - d.pos.x);
+            obs.push_back(d.target.y - d.pos.y);
+        }
+
+        return obs;
+    }
+    
 private:
     void handle_walls(Drone& d) {
         if (d.pos.x < 0.0) {
