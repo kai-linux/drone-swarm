@@ -75,6 +75,7 @@ public:
 
     void reset() {
         std::uniform_real_distribution<double> dist(5.0, world_size_ - 5.0);
+        drones_.clear();              // IMPORTANT
         drones_.reserve(num_drones_);
 
         for (int i = 0; i < num_drones_; ++i) {
