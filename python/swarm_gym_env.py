@@ -1,0 +1,61 @@
+import numpy as np
+import gymnasium as gym
+from gymnasium import spaces
+
+import swarm_cpp
+
+
+class SwarmGymEnv(gym.Env):
+    metadata = {"render_modes": []}
+
+    def __init__(self, num_drones=10, world_size=100.0, max_steps=300):
+        super().__init__()
+
+        self.world = swarm_cpp.SwarmWorld(num_drones, world_size)
+        self.num_drones = num_drones
+        self.world_size = world_size
+        self.max_steps = max_steps
+        self.current_step = 0
+
+        self.observation_space = spaces.Box(
+            low=-np.inf,
+            high=np.inf,
+            shape=(self.world.observation_size(),),
+            dtype=np.float32,
+        )
+
+        self.action_space = spaces.Box(
+            low=-12.0,
+            high=12.0,
+            shape=(self.world.action_size(),),
+            dtype=np.float32,
+        )
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+
+        self.world.reset()
+        self.current_step = 0
+
+        obs = np.array(self.world.observe(), dtype=np.float32)
+        info = {}
+
+        return obs, info
+
+    def step(self, action):
+        self.current_step += 1
+
+        action = np.asarray(action, dtype=np.float32)
+        action = np.clip(action, self.action_space.low, self.action_space.high)
+
+        result = self.world.step_flat(action.tolist())
+
+        obs = np.array(result.observation, dtype=np.float32)
+        reward = float(result.reward)
+
+        terminated = bool(result.done)
+        truncated = self.current_step >= self.max_steps
+
+        info = {}
+
+        return obs, reward, terminated, truncated, info
