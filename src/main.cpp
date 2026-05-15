@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <algorithm>
 
 struct Vec2 {
     double x = 0.0;
@@ -160,7 +161,7 @@ public:
 
         return obs;
     }
-    
+
 private:
     void handle_walls(Drone& d) {
         if (d.pos.x < 0.0) {
@@ -228,6 +229,17 @@ std::vector<Action> make_target_actions(const SwarmWorld& world) {
 
 int main() {
     SwarmWorld world(10, 100.0);
+
+    std::vector<double> obs = world.observe();
+
+    std::cout << "Observation size: " << obs.size() << "\n";
+    std::cout << "First values: ";
+
+    for (size_t i = 0; i < std::min<size_t>(obs.size(), 10); ++i) {
+        std::cout << obs[i] << " ";
+    }
+
+    std::cout << "\n";
 
     std::ofstream out("trajectory.csv");
 
