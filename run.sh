@@ -2,7 +2,8 @@
 set -e
 
 echo "Configuring..."
-cmake -S . -B build -G Ninja
+cmake -S . -B build -G Ninja \
+  -DPython_EXECUTABLE="$(pwd)/.venv/bin/python"
 
 echo "Building..."
 cmake --build build
