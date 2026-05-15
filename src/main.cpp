@@ -268,7 +268,10 @@ std::vector<Action> make_target_actions(const SwarmWorld& world) {
 }
 
 int main() {
-    SwarmWorld world(10, 100.0);
+    int num_drones = 10;
+    double world_size = 100.0;
+
+    SwarmWorld world(num_drones, world_size);
 
     std::vector<double> obs = world.observe();
 
@@ -292,7 +295,7 @@ int main() {
 
     const int num_steps = 1000;
 
-    std::vector<Action> actions(10);
+    std::vector<Action> actions(num_drones);
 
     for (int step = 0; step < num_steps; ++step) {
         world.write_csv_row(out, step);
@@ -300,6 +303,18 @@ int main() {
         std::vector<Action> actions = make_target_actions(world);
 
         world.step(actions);
+
+        double reward = world.compute_reward();
+        bool done = world.is_done();
+
+        if (step % 100 == 0) {
+            std::cout << "Step " << step << ", reward: " << reward << "\n";
+        }
+
+        if (done) {
+            std::cout << "All drones reacher their targets at step " << step << " with reward " << reward << "\n";
+            break;
+        }
     }
 
     std::cout << "Simulation finished. Wrote trajectory.csv\n";
