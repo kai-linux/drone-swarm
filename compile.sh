@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# This script compiles the C++ code.
+
 set -e
 
 PYTHON="$(pwd)/.venv/bin/python"

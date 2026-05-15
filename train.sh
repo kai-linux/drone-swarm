@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# This script trains the PPO agent, evaluates it, and visualizes the learned policy.
+
 set -e
 
 PYTHON="$(pwd)/.venv/bin/python"

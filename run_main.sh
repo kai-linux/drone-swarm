@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# This script compiles the C++ code, runs the simulation, and visualizes the results.
+
 set -e
 
 PYTHON="$(pwd)/.venv/bin/python"
