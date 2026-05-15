@@ -60,18 +60,20 @@ struct Action {
 class SwarmWorld {
 public:
     SwarmWorld(int num_drones, double world_size)
-        : world_size_(world_size)
+        : world_size_(world_size), num_drones_(num_drones), rng_(42)
     {
-        std::mt19937 rng(42);
+        reset();
+    }
+
+    void reset() {
         std::uniform_real_distribution<double> dist(5.0, world_size_ - 5.0);
+        drones_.reserve(num_drones_);
 
-        drones_.reserve(num_drones);
-
-        for (int i = 0; i < num_drones; ++i) {
+        for (int i = 0; i < num_drones_; ++i) {
             Drone d;
-            d.pos = {dist(rng), dist(rng)};
+            d.pos = {dist(rng_), dist(rng_)};
             d.vel = {0.0, 0.0};
-            d.target = {dist(rng), dist(rng)};
+            d.target = {dist(rng_), dist(rng_)};
             drones_.push_back(d);
         }
     }
@@ -241,6 +243,8 @@ private:
 
     std::vector<Drone> drones_;
 
+    int num_drones_;
+    std::mt19937 rng_;
 };
 
 std::vector<Action> make_target_actions(const SwarmWorld& world) {
@@ -312,7 +316,7 @@ int main() {
         }
 
         if (done) {
-            std::cout << "All drones reacher their targets at step " << step << " with reward " << reward << "\n";
+            std::cout << "All drones reached their targets at step " << step << " with reward " << reward << "\n";
             break;
         }
     }
