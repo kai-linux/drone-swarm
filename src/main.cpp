@@ -162,6 +162,45 @@ public:
         return obs;
     }
 
+    double compute_reward() const {
+        double reward = 0.0;
+
+        // Reward drones for being close to their targets
+        for (const Drone& d : drones_) {
+            double dist_to_target = length(d.target - d.pos);
+            reward -= dist_to_target * 0.01;
+        }
+
+        // Penalize drone collisions / too-close situations
+        for (size_t i = 0; i < drones_.size(); ++i) {
+            for (size_t j = i + 1; j < drones_.size(); ++j) {
+                double dist = length(drones_[i].pos - drones_[j].pos);
+
+                if (dist < 2.0) {
+                    reward -= 10.0;
+                }
+            }
+        }
+
+        // Bonus if all drones reached targets
+        if (is_done()) {
+            reward += 100.0;
+        }
+
+        return reward;
+    }
+
+    bool is_done() const {
+        for (const Drone& d : drones_) {
+            double dist_to_target = length(d.target - d.pos);
+
+            if (dist_to_target > target_radius_) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 private:
     void handle_walls(Drone& d) {
         if (d.pos.x < 0.0) {
@@ -201,6 +240,7 @@ private:
     double target_radius_ = 1.0;
 
     std::vector<Drone> drones_;
+
 };
 
 std::vector<Action> make_target_actions(const SwarmWorld& world) {
