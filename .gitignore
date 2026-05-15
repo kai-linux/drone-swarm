@@ -1,5 +1,12 @@
 .venv
 .env
 
-build/
 *.csv
+
+build/
+__pycache__/
+*.pyc
+
+python/swarm_cpp*.so
+python/swarm_ppo_model.zip
+python/*.zip

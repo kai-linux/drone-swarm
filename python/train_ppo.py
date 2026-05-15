@@ -4,7 +4,7 @@ from stable_baselines3.common.env_checker import check_env
 from swarm_gym_env import SwarmGymEnv
 
 
-env = SwarmGymEnv(num_drones=10, world_size=100.0, max_steps=300)
+env = SwarmGymEnv(num_drones=1, world_size=100.0, max_steps=300)
 
 check_env(env, warn=True)
 
@@ -19,7 +19,7 @@ model = PPO(
     gamma=0.99,
 )
 
-model.learn(total_timesteps=20_000)
+model.learn(total_timesteps=100_000)
 
 model.save("python/swarm_ppo_model")
 

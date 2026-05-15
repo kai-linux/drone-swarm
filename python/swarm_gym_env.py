@@ -24,9 +24,11 @@ class SwarmGymEnv(gym.Env):
             dtype=np.float32,
         )
 
+        self.max_acc = 12.0
+
         self.action_space = spaces.Box(
-            low=-12.0,
-            high=12.0,
+            low=-1.0,
+            high=1.0,
             shape=(self.world.action_size(),),
             dtype=np.float32,
         )
@@ -46,10 +48,12 @@ class SwarmGymEnv(gym.Env):
         self.current_step += 1
 
         action = np.asarray(action, dtype=np.float32)
-        action = np.clip(action, self.action_space.low, self.action_space.high)
+        action = np.clip(action, -1.0, 1.0)
 
-        result = self.world.step_flat(action.tolist())
+        scaled_action = action * self.max_acc
 
+        result = self.world.step_flat(scaled_action.tolist())
+        
         obs = np.array(result.observation, dtype=np.float32)
         reward = float(result.reward)
 
