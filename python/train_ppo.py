@@ -1,10 +1,10 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
-
+from cfg import *
 from swarm_gym_env import SwarmGymEnv
 
 
-env = SwarmGymEnv(num_drones=1, world_size=100.0, max_steps=300)
+env = SwarmGymEnv(num_drones=NUM_DRONES, world_size=WORLD_SIZE, max_steps=MAX_STEPS)
 
 check_env(env, warn=True)
 

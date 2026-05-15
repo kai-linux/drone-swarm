@@ -1,16 +1,16 @@
 from stable_baselines3 import PPO
-
+from cfg import *
 from swarm_gym_env import SwarmGymEnv
 
 
-env = SwarmGymEnv(num_drones=10, world_size=100.0, max_steps=300)
+env = SwarmGymEnv(num_drones=NUM_DRONES, world_size=WORLD_SIZE, max_steps=MAX_STEPS)
 model = PPO.load("python/swarm_ppo_model")
 
 obs, info = env.reset()
 
 total_reward = 0.0
 
-for step in range(300):
+for step in range(MAX_STEPS):
     action, _ = model.predict(obs, deterministic=True)
 
     obs, reward, terminated, truncated, info = env.step(action)

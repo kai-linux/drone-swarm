@@ -1,14 +1,14 @@
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
-
+from cfg import *
 import swarm_cpp
 
 
 class SwarmGymEnv(gym.Env):
     metadata = {"render_modes": []}
 
-    def __init__(self, num_drones=10, world_size=100.0, max_steps=300):
+    def __init__(self, num_drones=NUM_DRONES, world_size=WORLD_SIZE, max_steps=MAX_STEPS):
         super().__init__()
 
         self.world = swarm_cpp.SwarmWorld(num_drones, world_size)
@@ -53,7 +53,7 @@ class SwarmGymEnv(gym.Env):
         scaled_action = action * self.max_acc
 
         result = self.world.step_flat(scaled_action.tolist())
-        
+
         obs = np.array(result.observation, dtype=np.float32)
         reward = float(result.reward)
 
