@@ -57,6 +57,12 @@ struct Action {
     double ay = 0.0;
 };
 
+struct StepResult {
+    std::vector<double> observation;
+    double reward = 0.0;
+    bool done = false;
+};
+
 class SwarmWorld {
 public:
     SwarmWorld(int num_drones, double world_size)
@@ -78,7 +84,7 @@ public:
         }
     }
 
-    void step(const std::vector<Action>& actions) {
+    StepResult step(const std::vector<Action>& actions) {
         std::vector<Vec2> accelerations(drones_.size());
 
         for (size_t i = 0; i < drones_.size(); ++i) {
@@ -123,6 +129,12 @@ public:
                 d.vel = {0.0, 0.0};
             }
         }
+
+        StepResult result;
+        result.observation = observe();
+        result.reward = compute_reward();
+        result.done = is_done();
+        return result;
     }
 
     void write_csv_header(std::ofstream& out) const {
@@ -306,13 +318,13 @@ int main() {
 
         std::vector<Action> actions = make_target_actions(world);
 
-        world.step(actions);
+        StepResult result = world.step(actions);
 
-        double reward = world.compute_reward();
-        bool done = world.is_done();
+        double reward = result.reward;
+        bool done = result.done;
 
         if (step % 100 == 0) {
-            std::cout << "Step " << step << ", reward: " << reward << "\n";
+            std::cout << "Step " << step << ", reward: " << reward << ", observation size:" << result.observation.size() << "\n";
         }
 
         if (done) {
