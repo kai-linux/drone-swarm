@@ -21,6 +21,6 @@ model = PPO(
 
 model.learn(total_timesteps=100_000)
 
-model.save("python/swarm_ppo_model")
+model.save(f"python/{MODEL_NAME}")
 
-print("Saved model to python/swarm_ppo_model.zip")
+print(f"Saved model to python/{MODEL_NAME}.zip")

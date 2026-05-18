@@ -10,3 +10,5 @@ __pycache__/
 python/swarm_cpp*.so
 python/swarm_ppo_model.zip
 python/*.zip
+python/training/
+python/__pycache__/
